@@ -1,0 +1,57 @@
+async function login() {
+
+    const server = document.getElementById("server").value.trim();
+    const username = document.getElementById("user").value.trim();
+    const password = document.getElementById("pass").value.trim();
+    const msg = document.getElementById("msg");
+
+    if (!server || !username || !password) {
+        msg.innerHTML = "يرجى إدخال جميع البيانات";
+        return;
+    }
+
+    msg.innerHTML = "جاري الاتصال بالسيرفر...";
+
+    try {
+
+        let url = server;
+
+        if (url.endsWith("/")) {
+            url = url.slice(0, -1);
+        }
+
+        const api =
+        `${url}/player_api.php?username=${username}&password=${password}`;
+
+        const response = await fetch(api);
+
+        if (!response.ok) {
+            throw new Error("السيرفر لا يستجيب");
+        }
+
+        const data = await response.json();
+
+        if (data.user_info && data.user_info.auth === 1) {
+
+            localStorage.setItem("iptv_data", JSON.stringify(data));
+
+            msg.innerHTML = "تم تسجيل الدخول بنجاح ✅";
+
+            // هنا ننتقل لصفحة القنوات لاحقاً
+            setTimeout(() => {
+                alert("تم الاتصال بالسيرفر");
+            }, 500);
+
+        } else {
+
+            msg.innerHTML = "بيانات الدخول غير صحيحة ❌";
+
+        }
+
+    } catch (error) {
+
+        msg.innerHTML = "فشل الاتصال بالسيرفر ❌";
+        console.log(error);
+
+    }
+}
