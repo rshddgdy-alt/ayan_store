@@ -1,0 +1,67 @@
+<script>
+
+const user = JSON.parse(localStorage.getItem("ayan_user"));
+
+if(!user){
+    window.location.href="index.html";
+}
+
+
+const box = document.getElementById("channels");
+
+box.innerHTML = "جاري تحميل القنوات...";
+
+
+const server = user.server;
+const username = user.username;
+const password = user.password;
+
+
+const api =
+`/.netlify/functions/proxy?server=${encodeURIComponent(server)}&user=${encodeURIComponent(username)}&pass=${encodeURIComponent(password)}&action=get_live_streams`;
+
+
+fetch(api)
+.then(res => res.json())
+.then(data => {
+
+    console.log(data);
+
+    box.innerHTML = "";
+
+    if(!Array.isArray(data)){
+        box.innerHTML = "لم يتم العثور على قنوات";
+        return;
+    }
+
+
+    data.forEach(channel => {
+
+        const btn = document.createElement("button");
+
+        btn.innerHTML = channel.name;
+
+        btn.onclick = () => {
+
+            window.location.href =
+            "player.html?url=" + encodeURIComponent(channel.stream_url);
+
+        };
+
+
+        box.appendChild(btn);
+
+    });
+
+
+})
+.catch(err => {
+
+    console.log(err);
+
+    box.innerHTML="خطأ في تحميل القنوات";
+
+});
+
+
+</script>
