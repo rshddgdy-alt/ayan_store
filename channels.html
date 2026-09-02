@@ -29,7 +29,14 @@ if(!Array.isArray(data)){
 
 data.forEach(ch => {
 let btn = document.createElement("button");
-
+btn.style.display = "block";
+btn.style.width = "95%";
+btn.style.margin = "5px auto";
+btn.style.padding = "10px";
+btn.style.borderRadius = "8px";
+btn.style.background = "#222";
+btn.style.color = "white";
+btn.style.border = "1px solid #555";
 btn.innerHTML = ch.name;
 
 btn.onclick = ()=>{
