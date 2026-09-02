@@ -1,12 +1,27 @@
+<div id="channels"></div>
+
+<script>
+
+const box = document.getElementById("channels");
+
+const user = JSON.parse(localStorage.getItem("ayan_user"));
+
+const server = user.server;
+const username = user.username;
+const password = user.password;
+
+const url =
+`/.netlify/functions/proxy?server=${encodeURIComponent(server)}&user=${username}&pass=${password}`;
+
 fetch(url)
 .then(res => res.json())
 .then(data => {
 
-box.innerHTML="";
+box.innerHTML = "";
 
 data.forEach(ch => {
 
-let btn=document.createElement("button");
+let btn = document.createElement("button");
 
 btn.innerHTML = ch.name;
 
@@ -15,7 +30,7 @@ btn.onclick = ()=>{
 location.href =
 "player.html?url=" +
 encodeURIComponent(
-`${server}/live/${user}/${pass}/${ch.stream_id}.ts`
+`${server}/live/${username}/${password}/${ch.stream_id}.ts`
 );
 
 };
@@ -24,13 +39,10 @@ box.appendChild(btn);
 
 });
 
-
-if(data.length===0){
-box.innerHTML="لم يتم العثور على قنوات";
-}
-
 })
 .catch(err=>{
 console.log(err);
 box.innerHTML="خطأ في الاتصال بالسيرفر";
 });
+
+</script>
