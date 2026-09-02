@@ -1,3 +1,47 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<title>القنوات</title>
+
+<style>
+body{
+    background:#000;
+    color:white;
+    font-family:Arial;
+    text-align:center;
+}
+
+h1{
+    color:red;
+}
+
+button{
+    display:block;
+    width:90%;
+    margin:10px auto;
+    padding:15px;
+    background:#222;
+    color:white;
+    border:1px solid red;
+    border-radius:10px;
+    font-size:18px;
+}
+</style>
+
+</head>
+
+<body>
+
+<h1>AYAN IPTV</h1>
+
+<h2>القنوات</h2>
+
+<div id="channels">
+جاري تحميل القنوات...
+</div>
+
+
 <script>
 
 const user = JSON.parse(localStorage.getItem("ayan_user"));
@@ -9,59 +53,72 @@ if(!user){
 
 const box = document.getElementById("channels");
 
-box.innerHTML = "جاري تحميل القنوات...";
-
 
 const server = user.server;
 const username = user.username;
 const password = user.password;
 
 
-const api =
-`/.netlify/functions/proxy?server=${encodeURIComponent(server)}&user=${encodeURIComponent(username)}&pass=${encodeURIComponent(password)}&action=get_live_streams`;
+const api = `/.netlify/functions/proxy?server=${encodeURIComponent(server)}/player_api.php?username=${username}&password=${password}`;
 
 
 fetch(api)
+
 .then(res => res.json())
+
 .then(data => {
 
     console.log(data);
 
-    box.innerHTML = "";
+    box.innerHTML="";
+
 
     if(!Array.isArray(data)){
-        box.innerHTML = "لم يتم العثور على قنوات";
+
+        box.innerHTML="لم يتم العثور على قنوات";
         return;
+
     }
 
 
     data.forEach(channel => {
 
-        const btn = document.createElement("button");
 
-        btn.innerHTML = channel.name;
+        const btn=document.createElement("button");
 
-        btn.onclick = () => {
 
-            window.location.href =
-            "player.html?url=" + encodeURIComponent(channel.stream_url);
+        btn.innerHTML=channel.name;
+
+
+        btn.onclick=()=>{
+
+            window.location.href=
+            "player.html?url="+
+            encodeURIComponent(channel.stream_url);
 
         };
 
 
         box.appendChild(btn);
 
+
     });
 
 
 })
-.catch(err => {
 
-    console.log(err);
 
-    box.innerHTML="خطأ في تحميل القنوات";
+.catch(err=>{
+
+console.log(err);
+
+box.innerHTML="خطأ في تحميل القنوات";
 
 });
 
 
 </script>
+
+
+</body>
+</html>
