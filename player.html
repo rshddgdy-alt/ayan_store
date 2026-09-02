@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<title>IPTV Player</title>
+
+<style>
+body{
+background:#000;
+color:white;
+text-align:center;
+font-family:Arial;
+}
+
+h1{
+color:red;
+}
+
+video{
+width:95%;
+height:70vh;
+background:#111;
+margin-top:20px;
+}
+</style>
+
+</head>
+
+<body>
+
+<h1>AYAN IPTV</h1>
+
+<video id="video" controls autoplay></video>
+
+<script>
+
+const params = new URLSearchParams(window.location.search);
+
+const url = params.get("url");
+
+if(url){
+
+document.getElementById("video").src = url;
+
+}else{
+
+document.body.innerHTML += "<h2>لا يوجد رابط قناة</h2>";
+
+}
+
+</script>
+
+</body>
+</html>
