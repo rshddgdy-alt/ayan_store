@@ -4,12 +4,11 @@
 
 const box = document.getElementById("channels");
 
-const user = JSON.parse(localStorage.getItem("ayan_user"));
+const saved = JSON.parse(localStorage.getItem("ayan_user"));
 
-const server = user.server;
-const username = user.username;
-const password = user.password;
-
+const server = saved.server;
+const username = saved.username;
+const password = saved.password;
 const url =
 `/.netlify/functions/proxy?server=${encodeURIComponent(server)}&user=${username}&pass=${password}`;
 
