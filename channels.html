@@ -36,36 +36,33 @@ font-size:16px;
 <h1>AYAN IPTV</h1>
 <h3>القنوات</h3>
 
-<div id="channels">
-جاري تحميل القنوات...
-</div>
+<div id="channels">جاري تحميل القنوات...</div>
 
 
 <script>
 
-const box = document.getElementById("channels");
+const box=document.getElementById("channels");
 
-const user = JSON.parse(localStorage.getItem("ayan_user"));
-
+const user=JSON.parse(localStorage.getItem("ayan_user"));
 
 if(!user){
-    location.href="index.html";
+location.href="index.html";
 }
 
 
-const url = 
-`http://tv.business-cloud-8.ru/get.php?username=${user.username}&password=${user.password}&type=m3u_plus&output=ts`;
+const url =
+`/.netlify/functions/proxy?server=http://tv.business-cloud-8.ru&user=${user.username}&pass=${user.password}`;
 
 
 fetch(url)
 
-.then(response => response.text())
+.then(res=>res.text())
 
-.then(text => {
+.then(text=>{
 
 box.innerHTML="";
 
-const lines=text.split("\n");
+let lines=text.split("\n");
 
 
 for(let i=0;i<lines.length;i++){
@@ -73,9 +70,9 @@ for(let i=0;i<lines.length;i++){
 if(lines[i].startsWith("#EXTINF")){
 
 
-let name = lines[i].split(",").pop();
+let name=lines[i].split(",").pop();
 
-let stream = lines[i+1];
+let stream=lines[i+1];
 
 
 let btn=document.createElement("button");
@@ -100,16 +97,18 @@ box.appendChild(btn);
 
 
 if(box.innerHTML===""){
+
 box.innerHTML="لم يتم العثور على قنوات";
+
 }
 
 
 })
 
 
-.catch(error=>{
+.catch(err=>{
 
-console.log(error);
+console.log(err);
 
 box.innerHTML="خطأ في الاتصال بالسيرفر";
 
@@ -117,7 +116,6 @@ box.innerHTML="خطأ في الاتصال بالسيرفر";
 
 
 </script>
-
 
 </body>
 </html>
