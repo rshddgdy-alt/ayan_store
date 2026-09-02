@@ -22,14 +22,12 @@ fetch(url)
 console.log(data);
 
 box.innerHTML = "";
-
 if(!Array.isArray(data)){
-    box.innerHTML = "البيانات ليست قائمة قنوات";
+    box.innerHTML = JSON.stringify(data);
     return;
 }
 
 data.forEach(ch => {
-
 let btn = document.createElement("button");
 
 btn.innerHTML = ch.name;
