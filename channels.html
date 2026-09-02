@@ -1,51 +1,80 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<title>AYAN IPTV</title>
+
+<style>
+body{
+background:#000;
+color:white;
+font-family:Arial;
+text-align:center;
+}
+
+button{
+display:block;
+width:95%;
+margin:5px auto;
+padding:10px;
+border-radius:8px;
+background:#222;
+color:white;
+border:1px solid #555;
+}
+</style>
+
+</head>
+
+<body>
+
+<h1 style="color:red">AYAN IPTV</h1>
+
 <div id="channels"></div>
 
 <script>
 
 const box = document.getElementById("channels");
-const saved = JSON.parse(localStorage.getItem("ayan_user"));
+
+const saved = JSON.parse(localStorage.getItem("iptv"));
 
 if(!saved){
-    location.href="index.html";
+location.href="index.html";
 }
 
 const server = saved.server;
 const username = saved.username;
 const password = saved.password;
+
+
 const url =
-`/.netlify/functions/proxy?server=${encodeURIComponent(server)}&user=${username}&pass=${password}`;
+`/.netlify/functions/proxy?server=${encodeURIComponent(server)}/player_api.php?username=${username}&password=${password}&action=get_live_streams`;
+
 
 fetch(url)
-.then(res => res.json())
-.then(data => {
 
-console.log(data);
+.then(res=>res.json())
 
-box.innerHTML = "";
-if(!Array.isArray(data)){
-    box.innerHTML = JSON.stringify(data);
-    return;
-}
+.then(data=>{
 
-data.forEach(ch => {
-let btn = document.createElement("button");
-btn.style.display = "block";
-btn.style.width = "95%";
-btn.style.margin = "5px auto";
-btn.style.padding = "10px";
-btn.style.borderRadius = "8px";
-btn.style.background = "#222";
-btn.style.color = "white";
-btn.style.border = "1px solid #555";
-btn.innerHTML = ch.name;
+box.innerHTML="";
 
-btn.onclick = ()=>{
+data.forEach(ch=>{
 
-location.href =
-"player.html?url=" +
+let btn=document.createElement("button");
+
+btn.innerHTML=ch.name;
+
+
+btn.onclick=()=>{
+
+location.href=
+"player.html?url="+
 encodeURIComponent(
 `${server}/live/${username}/${password}/${ch.stream_id}.m3u8`
 );
+
+};
 
 
 box.appendChild(btn);
@@ -53,9 +82,17 @@ box.appendChild(btn);
 });
 
 })
+
 .catch(err=>{
+
 console.log(err);
+
 box.innerHTML="خطأ في الاتصال بالسيرفر";
+
 });
 
+
 </script>
+
+</body>
+</html>
