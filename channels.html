@@ -51,7 +51,7 @@ location.href="index.html";
 
 
 const url =
-`/.netlify/functions/proxy?server=http://tv.business-cloud-8.ru&user=${user.username}&pass=${user.password}`;
+`/.netlify/functions/proxy?server=${encodeURIComponent(user.server)}&user=${user.username}&pass=${user.password}`;
 
 
 fetch(url)
