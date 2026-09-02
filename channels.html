@@ -1,121 +1,36 @@
-<!DOCTYPE html>
-<html lang="ar">
-<head>
-<meta charset="UTF-8">
-<title>AYAN IPTV</title>
-
-<style>
-body{
-background:#000;
-color:white;
-font-family:Arial;
-text-align:center;
-}
-
-h1{
-color:red;
-}
-
-button{
-display:block;
-width:90%;
-margin:10px auto;
-padding:15px;
-background:#222;
-color:white;
-border:1px solid red;
-border-radius:10px;
-font-size:16px;
-}
-</style>
-
-</head>
-
-<body>
-
-<h1>AYAN IPTV</h1>
-<h3>القنوات</h3>
-
-<div id="channels">جاري تحميل القنوات...</div>
-
-
-<script>
-
-const box=document.getElementById("channels");
-
-const user=JSON.parse(localStorage.getItem("ayan_user"));
-
-if(!user){
-location.href="index.html";
-}
-
-
-const url =
-`/.netlify/functions/proxy?server=${encodeURIComponent(user.server)}&user=${user.username}&pass=${user.password}`;
-
-
 fetch(url)
-
-.then(res=>res.text())
-
-.then(text=>{
+.then(res => res.json())
+.then(data => {
 
 box.innerHTML="";
 
-let lines=text.split("\n");
-
-
-for(let i=0;i<lines.length;i++){
-
-if(lines[i].startsWith("#EXTINF")){
-
-
-let name=lines[i].split(",").pop();
-
-let stream=lines[i+1];
-
+data.forEach(ch => {
 
 let btn=document.createElement("button");
 
-btn.innerHTML=name;
+btn.innerHTML = ch.name;
 
+btn.onclick = ()=>{
 
-btn.onclick=()=>{
-
-location.href=
-"player.html?url="+encodeURIComponent(stream);
+location.href =
+"player.html?url=" +
+encodeURIComponent(
+`${server}/live/${user}/${pass}/${ch.stream_id}.ts`
+);
 
 };
 
-
 box.appendChild(btn);
-
-
-}
-
-}
-
-
-if(box.innerHTML===""){
-
-box.innerHTML="لم يتم العثور على قنوات";
-
-}
-
-
-})
-
-
-.catch(err=>{
-
-console.log(err);
-
-box.innerHTML="خطأ في الاتصال بالسيرفر";
 
 });
 
 
-</script>
+if(data.length===0){
+box.innerHTML="لم يتم العثور على قنوات";
+}
 
-</body>
-</html>
+})
+.catch(err=>{
+console.log(err);
+box.innerHTML="خطأ في الاتصال بالسيرفر";
+});
