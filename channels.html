@@ -1,48 +1,123 @@
-<script>
-const user = JSON.parse(localStorage.getItem("ayan_user"));
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<title>AYAN IPTV</title>
 
-if(!user){
-  window.location.href="index.html";
+<style>
+body{
+background:#000;
+color:white;
+font-family:Arial;
+text-align:center;
 }
+
+h1{
+color:red;
+}
+
+button{
+display:block;
+width:90%;
+margin:10px auto;
+padding:15px;
+background:#222;
+color:white;
+border:1px solid red;
+border-radius:10px;
+font-size:16px;
+}
+</style>
+
+</head>
+
+<body>
+
+<h1>AYAN IPTV</h1>
+<h3>القنوات</h3>
+
+<div id="channels">
+جاري تحميل القنوات...
+</div>
+
+
+<script>
 
 const box = document.getElementById("channels");
 
-box.innerHTML = "جاري تحميل القنوات...";
+const user = JSON.parse(localStorage.getItem("ayan_user"));
 
-const m3u = `http://tv.business-cloud-8.ru/get.php?username=${user.username}&password=${user.password}&type=m3u_plus&output=ts`;
 
-fetch(m3u)
-.then(res => res.text())
+if(!user){
+    location.href="index.html";
+}
+
+
+const url = 
+`http://tv.business-cloud-8.ru/get.php?username=${user.username}&password=${user.password}&type=m3u_plus&output=ts`;
+
+
+fetch(url)
+
+.then(response => response.text())
+
 .then(text => {
 
 box.innerHTML="";
 
-let lines = text.split("\n");
+const lines=text.split("\n");
+
 
 for(let i=0;i<lines.length;i++){
 
- if(lines[i].startsWith("#EXTINF")){
+if(lines[i].startsWith("#EXTINF")){
 
-  let name = lines[i].split(",")[1] || "قناة";
 
-  let url = lines[i+1];
+let name = lines[i].split(",").pop();
 
-  let btn = document.createElement("button");
+let stream = lines[i+1];
 
-  btn.innerHTML = name;
 
-  btn.onclick = ()=>{
-   window.location.href="player.html?url="+encodeURIComponent(url);
-  };
+let btn=document.createElement("button");
 
-  box.appendChild(btn);
- }
+btn.innerHTML=name;
+
+
+btn.onclick=()=>{
+
+location.href=
+"player.html?url="+encodeURIComponent(stream);
+
+};
+
+
+box.appendChild(btn);
+
 
 }
 
+}
+
+
+if(box.innerHTML===""){
+box.innerHTML="لم يتم العثور على قنوات";
+}
+
+
 })
-.catch(err=>{
- console.log(err);
- box.innerHTML="خطأ في تحميل القنوات";
+
+
+.catch(error=>{
+
+console.log(error);
+
+box.innerHTML="خطأ في الاتصال بالسيرفر";
+
 });
+
+
 </script>
+
+
+</body>
+</html>
