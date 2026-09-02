@@ -40,15 +40,18 @@ const url = params.get("url");
 
 if(url){
 
-document.getElementById("video").src = url;
+let video = document.getElementById("video");
+
+if(Hls.isSupported()){
+
+let hls = new Hls();
+hls.loadSource(url);
+hls.attachMedia(video);
 
 }else{
 
-document.body.innerHTML += "<h2>لا يوجد رابط قناة</h2>";
+video.src = url;
 
 }
 
-</script>
-
-</body>
-</html>
+}else{
