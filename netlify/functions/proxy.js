@@ -1,47 +1,45 @@
+exports.handler = async (event) => {
 
-  const params = event.queryStringParameters || {};
+const params = event.queryStringParameters || {};
 
-  const server = params.server;
-  const user = params.user;
-  const pass = params.pass;
+const server = params.server;
+const user = params.user;
+const pass = params.pass;
 
-  if (!server || !user || !pass) {
-    return {
-      statusCode: 400,
-      body: JSON.stringify({
-        error: "Missing data"
-      })
-    };
-  }
+if (!server || !user || !pass) {
+return {
+statusCode:400,
+body:JSON.stringify({error:"Missing data"})
+};
+}
 
-  try {
+try {
 
-    const url = `${server}/player_api.php?username=${encodeURIComponent(user)}&password=${encodeURIComponent(pass)}&action=get_live_streams`;
+const url =
+`${server}/player_api.php?username=${encodeURIComponent(user)}&password=${encodeURIComponent(pass)}&action=get_live_streams`;
 
-    const response = await fetch(url);
+const response = await fetch(url);
 
-    const data = await response.text();
+const data = await response.text();
 
-    return {
-      statusCode: 200,
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Content-Type": "application/json"
-      },
-      body: data
-    };
+return {
+statusCode:200,
+headers:{
+"Access-Control-Allow-Origin":"*",
+"Content-Type":"application/json"
+},
+body:data
+};
 
-  } catch (error) {
+} catch(error){
 
-    return {
-      statusCode: 500,
-      headers: {
-        "Access-Control-Allow-Origin": "*"
-      },
-      body: JSON.stringify({
-        error: "Server connection failed"
-      })
-    };
+return {
+statusCode:500,
+body:JSON.stringify({
+error:"Server connection failed"
+})
+};
 
-  }
+}
 
+};
