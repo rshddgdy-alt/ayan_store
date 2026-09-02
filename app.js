@@ -1,52 +1,48 @@
-async function login(){
+exports.handler = async (event) => {
 
-const server = document.getElementById("server").value;
-const username = document.getElementById("user").value;
-const password = document.getElementById("pass").value;
+const params = event.queryStringParameters || {};
 
-const btn = document.querySelector("button");
-btn.innerHTML = "جاري الاتصال...";
+const server = params.server;
+const user = params.user;
+const pass = params.pass;
 
+if(!server || !user || !pass){
+return {
+statusCode:400,
+body:JSON.stringify({error:"Missing data"})
+};
+}
 
-try {
+try{
 
-const api =
-`/.netlify/functions/proxy?server=${encodeURIComponent(server)}&user=${encodeURIComponent(username)}&pass=${encodeURIComponent(password)}`;
+const url =
+`${server}/player_api.php?username=${encodeURIComponent(user)}&password=${encodeURIComponent(pass)}&action=get_live_streams`;
 
-const response = await fetch(api);
+const response = await fetch(url);
 
-const data = await response.json();
+const text = await response.text();
 
+return {
+statusCode:200,
+headers:{
+"Access-Control-Allow-Origin":"*",
+"Content-Type":"application/json"
+},
+body:text
+};
 
-if(data && !data.error){
+}catch(e){
 
-alert("تم تسجيل الدخول بنجاح ✅");
-
-
-localStorage.setItem(
-"ayan_user",
-JSON.stringify(data)
-);
-
-
-// الانتقال إلى صفحة القنوات
-window.location.href = "channels.html";
-
-
-}else{
-
-alert("بيانات الدخول غير صحيحة ❌");
+return {
+statusCode:500,
+headers:{
+"Access-Control-Allow-Origin":"*"
+},
+body:JSON.stringify({
+error:e.message
+})
+};
 
 }
 
-
-}catch(error){
-
-alert("فشل الاتصال بالسيرفر ❌");
-
-}
-
-
-btn.innerHTML = "تسجيل الدخول";
-
-}
+};
