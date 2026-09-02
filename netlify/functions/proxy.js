@@ -20,16 +20,18 @@ const url =
 
 const response = await fetch(url);
 
-const data = await response.text();
+const data = await response.json();
 
 return {
-statusCode:200,
-headers:{
-"Access-Control-Allow-Origin":"*",
-"Content-Type":"application/json"
-},
-body:data
-};
+ statusCode:200,
+ headers:{
+  "Access-Control-Allow-Origin":"*",
+  "Content-Type":"application/json"
+ },
+ body:JSON.stringify(
+  Array.isArray(data) ? data.slice(0,200) : data
+)
+}
 
 } catch(error){
 
