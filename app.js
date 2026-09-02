@@ -13,7 +13,6 @@ try {
 const api =
 `/.netlify/functions/proxy?server=${encodeURIComponent(server)}&user=${encodeURIComponent(username)}&pass=${encodeURIComponent(password)}`;
 
-
 const response = await fetch(api);
 
 const data = await response.json();
