@@ -1,4 +1,3 @@
-exports.handler = async (event) => {
 
   const params = event.queryStringParameters || {};
 
@@ -46,4 +45,3 @@ exports.handler = async (event) => {
 
   }
 
-};
