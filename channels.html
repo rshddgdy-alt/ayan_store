@@ -1,61 +1,48 @@
+<script>
 const user = JSON.parse(localStorage.getItem("ayan_user"));
 
 if(!user){
-    window.location.href="index.html";
+  window.location.href="index.html";
 }
 
 const box = document.getElementById("channels");
 
-box.innerHTML="جاري تحميل القنوات...";
-
+box.innerHTML = "جاري تحميل القنوات...";
 
 const m3u = `http://tv.business-cloud-8.ru/get.php?username=${user.username}&password=${user.password}&type=m3u_plus&output=ts`;
-
 
 fetch(m3u)
 .then(res => res.text())
 .then(text => {
 
-    box.innerHTML="";
+box.innerHTML="";
 
-    const lines = text.split("\n");
+let lines = text.split("\n");
 
-    for(let i=0;i<lines.length;i++){
+for(let i=0;i<lines.length;i++){
 
-        if(lines[i].startsWith("#EXTINF")){
+ if(lines[i].startsWith("#EXTINF")){
 
-            let name = lines[i].split(",").pop();
+  let name = lines[i].split(",")[1] || "قناة";
 
-            let url = lines[i+1];
+  let url = lines[i+1];
 
+  let btn = document.createElement("button");
 
-            const btn=document.createElement("button");
+  btn.innerHTML = name;
 
-            btn.innerHTML=name;
+  btn.onclick = ()=>{
+   window.location.href="player.html?url="+encodeURIComponent(url);
+  };
 
+  box.appendChild(btn);
+ }
 
-            btn.onclick=()=>{
-
-                window.location.href =
-                "player.html?url=" +
-                encodeURIComponent(url);
-
-            };
-
-
-            box.appendChild(btn);
-        }
-    }
-
-
-    if(box.innerHTML===""){
-        box.innerHTML="لم يتم العثور على قنوات";
-    }
+}
 
 })
 .catch(err=>{
-
-console.log(err);
-box.innerHTML="خطأ في تحميل القنوات";
-
+ console.log(err);
+ box.innerHTML="خطأ في تحميل القنوات";
 });
+</script>
